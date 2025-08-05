@@ -1,26 +1,30 @@
-from pygame import* 
+import pygame
+from pygame import *
 from random import randint
 import sys
 
-win_width = 600 #ширина єкрану
-win_height = 600 #висота єкрану
 
-window = display.set_mode((win_width, win_height)) #вікно з заданими розмірами
-display.set_caption("Snake") #назва єкрану
+pygame.init()
 
-background = image.load("gamefon.jpg") #зображення фону
-background = transform.scale(image.load("gamefon.jpg"), (win_width, win_height)) #фон до розмірів вікна
+win_width = 600
+win_height = 600
 
-button_image = image.load("button2.png")
-button_image = transform.scale(button_image, (300, 80))
+
+window = display.set_mode((win_width, win_height))
+display.set_caption("Snake")
+
+background = transform.scale(image.load("gamefon.jpg"), (win_width, win_height))
+button_image = transform.scale(image.load("button2.png"), (300, 80))
+
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = Color('gray15')
-LIGHT_BLUE = Color('lightskyblue3')
+LIGHT_BLUE = Color('green')
 
-font = font.SysFont("Courier New", 40)
-small_font = font.Font(None, 30)
+
+font = pygame.font.SysFont("Arial", 40)
+small_font = pygame.font.Font(None, 30)
 
 menu_items = ["Play", "Quit"]
 menu_functions = ["start_game", "quit"]
@@ -28,7 +32,7 @@ menu_positions = []
 
 for index, item in enumerate(menu_items):
     text = font.render(item, True, WHITE)
-    position = button_image.get_rect(center=(win_width// 2, 200 + index * 120))
+    position = button_image.get_rect(center=(win_width // 2, 200 + index * 120))
     menu_positions.append((text, position))
 
 nickname_input_active = False
@@ -39,11 +43,11 @@ input_color_inactive = GRAY
 input_color = input_color_inactive
 
 def start_game(nickname):
-    print(f"Игра началась для игрока: {nickname}")
-    # Здесь можно вызывать game_loop()
+    print(f"Гра почалася для гравця: {nickname}")
+
 
 def quit_game():
-    quit()
+    pygame.quit()
     sys.exit()
 
 menu_actions = {
@@ -59,7 +63,8 @@ def main_menu():
         window.blit(background, (0, 0))
 
         mouse_pos = mouse.get_pos()
-        for event in event.get():
+
+        for event in pygame.event.get():
             if event.type == QUIT:
                 quit_game()
 
@@ -74,7 +79,7 @@ def main_menu():
                 for i, (_, position) in enumerate(menu_positions):
                     if position.collidepoint(mouse_pos):
                         action = menu_functions[i]
-                        if nickname.strip():  # Только если введён ник
+                        if nickname.strip():  
                             menu_actions[action]()
 
             elif event.type == KEYDOWN and nickname_input_active:
@@ -86,12 +91,11 @@ def main_menu():
                 elif len(nickname) < 20:
                     nickname += event.unicode
 
-        # Отрисовка поля ввода ника
+    
         draw.rect(window, input_color, input_box, 2)
-        nickname_surface = font.render(nickname or "nickname", True, WHITE if nickname else (150, 150, 150))
+        nickname_surface = font.render(nickname or "nickname", True, WHITE if nickname else (225, 225, 225))
         window.blit(nickname_surface, (input_box.x + 10, input_box.y + 10))
 
-        # Отображение кнопок меню
         for i, (text, position) in enumerate(menu_positions):
             if position.collidepoint(mouse_pos):
                 text = font.render(menu_items[i], True, BLACK)
@@ -102,13 +106,7 @@ def main_menu():
             text_rect = text.get_rect(center=position.center)
             window.blit(text, text_rect)
 
-        window.display.flip()
+        display.flip()
 
-# Запуск главного меню
+
 main_menu()
-
-       
-
-# Запуск главного меню
-main_menu()
-
