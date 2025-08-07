@@ -18,7 +18,7 @@ button_image = transform.scale(image.load("button2.png"), (300, 80))
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = Color('gray15')
-LIGHT_BLUE = Color('while')
+LIGHT_BLUE = Color('white')
 
 
 font = pygame.font.SysFont("Arial", 40)
@@ -91,10 +91,21 @@ def start_game(nickname):
 
     if alive:
         new_pos = snake[0][0] + directions[direction][0], snake[0][1] + directions[direction][1]
-        if not (0 <= new_pos[0] < MSize[0] and 0 <= new_pos [1] < Msize[1]) or new_pos in snake:
-        `   alive = False
-
-
+        if not (0 <= new_pos[0] < MSize[0] and 0 <= new_pos[1] < MSize[1]) or new_pos in snake:
+           alive = False
+        else:
+            snake.insert(0, new_pos)
+            if new_pos == apple:
+                FPS += 1
+                apple = randint(0, MSize[0] - 1), randint(0, MSize[1] - 1)
+            else:
+                snake.pop(-1)
+    else: 
+        text = font_gameover.render("Game Over", True, "while")
+        win_game.blit(text, (WSize[0] // 2 - text.get_width() // 2 - 40))
+        text2 = small_font.render("Press SPACE to return to menu", True, "white")
+        win_game(text2, (WSize[0] // 2 - text2.get_width() // 2, WSize[1] // 2 + 10))
+    display.flip()
 
 menu_actions = {
     "start_game": lambda: start_game(nickname),
@@ -107,15 +118,14 @@ def main_menu():
 
     while True:
         window.blit(background, (0, 0))
-
         mouse_pos = mouse.get_pos()
 
-        for event in pygame.event.get():
-            if event.type == QUIT:
+        for e in event.get():
+            if e.type == QUIT:
                 quit_game()
 
-            elif event.type == MOUSEBUTTONDOWN:
-                if input_box.collidepoint(event.pos):
+            elif e.type == MOUSEBUTTONDOWN:
+                if input_box.collidepoint(e.pos):
                     nickname_input_active = True
                     input_color = input_color_active
                 else:
@@ -128,14 +138,14 @@ def main_menu():
                         if nickname.strip():  
                             menu_actions[action]()
 
-            elif event.type == KEYDOWN and nickname_input_active:
-                if event.key == K_RETURN:
+            elif e.type == KEYDOWN and nickname_input_active:
+                if e.key == K_RETURN:
                     nickname_input_active = False
                     input_color = input_color_inactive
-                elif event.key == K_BACKSPACE:
+                elif e.key == K_BACKSPACE:
                     nickname = nickname[:-1]
                 elif len(nickname) < 20:
-                    nickname += event.unicode
+                    nickname += e.unicode
 
     
         draw.rect(window, input_color, input_box, 2)
