@@ -86,7 +86,14 @@ def start_game(nickname):
             else:
                 if e.key == K_SPACE:
                     return
-                
+    [pygame.draw.rect(win_game, "green", (x *TSide, y * TSide, TSide - 1, TSide - 1)) for x, y in snake]            
+    pygame.draw.rect(win_game,"red",(apple[0] * TSide, apple[1] * TSide, TSide - 1, TSide - 1))
+
+    if alive:
+        new_pos = snake[0][0] + directions[direction][0], snake[0][1] + directions[direction][1]
+        if not (0 <= new_pos[0] < MSize[0] and 0 <= new_pos [1] < Msize[1]) or new_pos in snake:
+        `   alive = False
+
 
 
 menu_actions = {
