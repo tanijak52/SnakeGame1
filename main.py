@@ -61,6 +61,11 @@ def start_game(nickname):
     FPS = 3
     clock = pygame.time.Clock()
 
+    score = 0
+    score_font = pygame.font.SysFont("Arial", 30)
+
+    saved = False
+
     run = True
     while run:
         clock.tick(FPS)
@@ -81,7 +86,7 @@ def start_game(nickname):
                     if e.key == K_w and direction != 1:
                         direction = 3
                 else:
-                    if event.key == K_SPACE:
+                    if e.key == K_SPACE:
                         return
 
         [pygame.draw.rect(win_game, "green", (x * TSide, y * TSide, TSide - 1, TSide - 1)) for x, y in snake]
@@ -99,10 +104,25 @@ def start_game(nickname):
                 else:
                     snake.pop(-1)
         else:
-            text = font_gameover.render('GAME OVER', True, 'white')
-            win_game.blit(text, (WSize[0] // 2 - text.get_width() // 2, WSize[1] // 2 - 40))
-            text2 = small_font.render("Press SPACE to return to menu", True, 'white')
-            win_game.blit(text2, (WSize[0] // 2 - text2.get_width() // 2, WSize[1] // 2 + 10))
+           text = font_gameover.render('GAME OVER', True, 'white')
+           win_game.blit(text, (WSize[0] // 2 - text.get_width() // 2, WSize[1] // 2 - 60))
+
+           nickname_text = small_font.render(f"Player: {nickname}", True, 'white')
+           win_game.blit(nickname_text, (WSize[0] // 2 - nickname_text.get_width() // 2, WSize[1] // 2 - 10))
+
+           score_text = small_font.render(f"Score: {score}", True, 'white')
+           win_game.blit(score_text, (WSize[0] // 2 - score_text.get_width() // 2, WSize[1] // 2 + 20))
+
+           text2 = small_font.render("Press SPACE to return to menu", True, 'white')
+           win_game.blit(text2, (WSize[0] // 2 - text2.get_width() // 2, WSize[1] // 2 + 60))
+
+           if not saved:
+                with open("scores.txt", "a", encoding="utf-8") as f:
+                    f.write(f"{nickname}: {score}\n")
+                saved = True
+
+        score_display = score_font.render(f"{nickname}'s Score: {score}", True, 'white')
+        win_game.blit(score_display, (10, 10))
 
         pygame.display.flip()
 
