@@ -99,6 +99,7 @@ def start_game(nickname):
             else:
                 snake.insert(0, new_pos)
                 if new_pos == apple:
+                    score += 1 
                     FPS += 1
                     apple = randint(0, MSize[0] - 1), randint(0, MSize[1] - 1)
                 else:
